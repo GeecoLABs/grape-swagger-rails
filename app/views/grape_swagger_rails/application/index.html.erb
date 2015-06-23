@@ -8,12 +8,14 @@
   <script type="text/javascript">
 	$(function () {
 	  var options = $("html").data('swagger-options');
-
+      <%- if GrapeSwaggerRails.options.api_key_initial.present? %>
+        $('#input_apiKey').val("<%= GrapeSwaggerRails.options.api_key_initial %>");
+      <%- end %>
     window.swaggerUi = new SwaggerUi({
       url: options.app_url + options.url,
       dom_id:"swagger-ui-container",
       supportHeaderParams: true,
-      supportedSubmitMethods: ['get', 'post', 'put', 'delete'],
+      supportedSubmitMethods: ['get', 'post', 'put', 'delete', 'patch'],
       onComplete: function(swaggerApi, swaggerUi){
         if('console' in window) {
           console.log("Loaded SwaggerUI")
@@ -25,11 +27,12 @@
                 initOAuth({
                     clientId: "<%= GrapeSwaggerRails.options.oauth2[:client_id] %>",
                     realm: "<%= GrapeSwaggerRails.options.oauth2[:realm] %>",
-                    appName: "<%= GrapeSwaggerRails.options.oauth2[:appName] %>"
+                    appName: "<%= GrapeSwaggerRails.options.oauth2[:app_name] %>"
                 });
             }
         <%- end %>
         $('pre code').each(function(i, e) {hljs.highlightBlock(e)});
+        addApiKeyAuthorization();
       },
       onFailure: function(data) {
         if('console' in window) {
@@ -37,8 +40,26 @@
           console.log(data);
         }
       },
-      docExpansion: "none"
+      docExpansion: "list",
+      //apisSorter: "alpha",
+      showRequestHeaders: true
     });
+    function addApiKeyAuthorization(){
+        var key = encodeURIComponent($('#input_apiKey')[0].value);
+        if(key && key.trim() != "") {
+            if (options.api_auth == 'basic') {
+                key = "Basic " + Base64.encode(key);
+            } else if (options.api_auth == 'bearer') {
+                key = "Bearer " + key
+            }
+            var apiKeyAuth = new SwaggerClient.ApiKeyAuthorization(options.api_key_name, key, options.api_key_type);
+            window.swaggerUi.api.clientAuthorizations.add("key", apiKeyAuth);
+            console.log("added key " + key);
+        }
+        <% GrapeSwaggerRails.options.headers.each_with_index do |(key, value), index| %>
+          <%=raw "window.swaggerUi.api.clientAuthorizations.add('header_#{index}', new SwaggerClient.ApiKeyAuthorization('#{CGI.escapeHTML(key)}', '#{CGI.escapeHTML(value)}', 'header'));" %>
+        <% end %>
+    }
 
     $('#input_apiKey').change(function() {
       var key = $('#input_apiKey')[0].value;
@@ -49,15 +70,13 @@
         } else if (options.api_auth == 'bearer') {
           key = "Bearer " + key
         }
-        window.authorizations.add("key", new ApiKeyAuthorization(options.api_key_name, key, options.api_key_type));
+        window.swaggerUi.api.clientAuthorizations.add("key", new SwaggerClient.ApiKeyAuthorization(options.api_key_name, key, options.api_key_type));
       } else {
-        window.authorizations.add("key", null);
+          window.swaggerUi.api.clientAuthorizations.add("key", null);
       }
     });
 
-    <% GrapeSwaggerRails.options.headers.each_with_index do |(key, value), index| %>
-      <%=raw "window.authorizations.add('header_#{index}', new ApiKeyAuthorization('#{CGI.escapeHTML(key)}', '#{CGI.escapeHTML(value)}', 'header'));" %>
-    <% end %>
+
 
     window.swaggerUi.load();
   });

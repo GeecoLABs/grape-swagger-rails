@@ -3,6 +3,6 @@
 *= require ./screen
 *= require ./style
 *= require ./typography
-*= require ./print
+* require ./print
 *= require_self
 */
