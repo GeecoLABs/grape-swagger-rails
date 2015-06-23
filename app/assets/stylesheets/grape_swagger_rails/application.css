@@ -1,5 +1,8 @@
 /*
 *= require ./reset
 *= require ./screen
+*= require ./style
+*= require ./typography
+*= require ./print
 *= require_self
 */
