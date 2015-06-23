@@ -21,16 +21,16 @@ namespace :swagger_ui do
         FileUtils.cp Dir.glob("#{root}/lib/javascripts/*.js"), "#{root}/app/assets/javascripts/grape_swagger_rails"
         # Generate application.js
         JAVASCRIPT_FILES = [
-            'shred.bundle.js',
             'jquery-1.8.0.min.js',
             'jquery.slideto.min.js',
             'jquery.wiggle.min.js',
             'jquery.ba-bbq.min.js',
-            'handlebars-1.0.0.js',
+            'handlebars-2.0.0.js',
+            'marked.js',
             'underscore-min.js',
             'backbone-min.js',
-            'swagger.js',
             'swagger-ui.min.js',
+            'swagger-oauth.js',
             'highlight.7.3.pack.js',
             'swagger-oauth.js',
             'base64.js'
@@ -58,7 +58,10 @@ namespace :swagger_ui do
         # Generate application.js
         CSS_FILES = [
             'reset.css',
-            'screen.css'
+            'screen.css',
+            'style.css',
+            'typography.css',
+            'print.css'
         ]
         css_files = Dir["#{root}/app/assets/stylesheets/grape_swagger_rails/*.css"].map { |f|
             f.split('/').last
