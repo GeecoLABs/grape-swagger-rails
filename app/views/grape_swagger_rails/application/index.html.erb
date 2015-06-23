@@ -20,6 +20,15 @@
           console.log(swaggerApi);
           console.log(swaggerUi);
         }
+        <%- if GrapeSwaggerRails.options.oauth2.present? %>
+            if(typeof initOAuth == 'function') {
+                initOAuth({
+                    clientId: "<%= GrapeSwaggerRails.options.oauth2[:client_id] %>",
+                    realm: "<%= GrapeSwaggerRails.options.oauth2[:realm] %>",
+                    appName: "<%= GrapeSwaggerRails.options.oauth2[:appName] %>"
+                });
+            }
+        <%- end %>
         $('pre code').each(function(i, e) {hljs.highlightBlock(e)});
       },
       onFailure: function(data) {

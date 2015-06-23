@@ -95,6 +95,12 @@ namespace :swagger_ui do
         FileUtils.mkdir_p "#{root}/app/assets/images/grape_swagger_rails"
         FileUtils.cp_r Dir.glob("#{dir}/swagger-ui/dist/images/**/*"), "#{root}/app/assets/images/grape_swagger_rails"
         repo.add 'app/assets'
+        # Fonts
+        puts "Copying Fonts ..."
+        # repo.remove 'app/assets/fonts/grape_swagger_rails', recursive: true
+        FileUtils.mkdir_p "#{root}/app/assets/fonts/grape_swagger_rails"
+        FileUtils.cp_r Dir.glob("#{dir}/swagger-ui/dist/fonts/**/*"), "#{root}/app/assets/fonts/grape_swagger_rails"
+        repo.add 'app/assets'
       end
     end
   end
