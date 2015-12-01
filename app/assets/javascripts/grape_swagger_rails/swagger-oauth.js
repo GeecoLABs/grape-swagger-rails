@@ -192,7 +192,7 @@ function initOAuth(opts) {
   scopeSeparator = (o.scopeSeparator||' ');
 
   if(errors.length > 0){
-    log('auth unable initialize oauth: ' + errors);
+    console.log('auth unable initialize oauth: ' + errors);
     return;
   }
 
