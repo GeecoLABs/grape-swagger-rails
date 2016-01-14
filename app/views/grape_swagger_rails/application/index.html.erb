@@ -10,10 +10,6 @@
 	$(function () {
 	  var options = $("html").data('swagger-options');
 
-    <%- if GrapeSwaggerRails.options.api_key_initial.present? %>
-      $('#input_apiKey').val("<%= GrapeSwaggerRails.options.api_key_initial %>");
-    <%- end %>
-
     window.swaggerUi = new SwaggerUi({
       url: options.app_url + options.url,
       dom_id: "swagger-ui-container",
