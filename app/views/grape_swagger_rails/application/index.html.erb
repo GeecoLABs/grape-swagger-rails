@@ -9,10 +9,6 @@
 	$(function () {
 	  var options = $("html").data('swagger-options');
 
-    <%- if GrapeSwaggerRails.options.api_key_initial.present? %>
-      $('#input_apiKey').val("<%= GrapeSwaggerRails.options.api_key_initial %>");
-    <%- end %>
-
     window.swaggerUi = new SwaggerUi({
       url: options.app_url + options.url,
       dom_id: "swagger-ui-container",
@@ -51,11 +47,20 @@
       }
     });
 
+    <%- if GrapeSwaggerRails.options.api_key_initial.present? %>
+      $('#input_apiKey').val("<%= GrapeSwaggerRails.options.api_key_initial %>")
+    <%- end %>
+
     window.swaggerUi.load();
 
     <% GrapeSwaggerRails.options.headers.each_with_index do |(key, value), index| %>
-      <%=raw "window.swaggerUi.api.clientAuthorizations.add('header_#{index}', new SwaggerClient.ApiKeyAuthorization('#{CGI.escapeHTML(key)}', '#{CGI.escapeHTML(value)}', 'header'));" %>
+    <%=raw "window.swaggerUi.api.clientAuthorizations.add('header_#{index}', new SwaggerClient.ApiKeyAuthorization('#{CGI.escapeHTML(key)}', '#{CGI.escapeHTML(value)}', 'header'));" %>
     <% end %>
+
+    <%- if GrapeSwaggerRails.options.api_key_initial.present? %>
+      $('#input_apiKey').trigger('change');
+    <%- end %>
+
   });
   </script>
 </head>
