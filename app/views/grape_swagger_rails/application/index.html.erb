@@ -10,6 +10,11 @@
 	$(function () {
 	  var options = $("html").data('swagger-options');
 
+    auth_headers = {}
+    <% GrapeSwaggerRails.options.headers.each_with_index do |(key, value), index| %>
+      <%=raw "auth_headers['header_#{index}'] = new SwaggerClient.ApiKeyAuthorization('#{CGI.escapeHTML(key)}', '#{CGI.escapeHTML(value)}', 'header');" %>
+    <% end %>
+
     window.swaggerUi = new SwaggerUi({
       url: options.app_url + options.url,
       dom_id: "swagger-ui-container",
@@ -30,7 +35,8 @@
         }
       },
       docExpansion: options.doc_expansion,
-      apisSorter: "alpha"
+      apisSorter: "alpha",
+      authorizations: auth_headers
     });
 
     $('#input_apiKey').change(function() {
@@ -54,9 +60,6 @@
 
     window.swaggerUi.load();
 
-    <% GrapeSwaggerRails.options.headers.each_with_index do |(key, value), index| %>
-    <%=raw "window.swaggerUi.api.clientAuthorizations.add('header_#{index}', new SwaggerClient.ApiKeyAuthorization('#{CGI.escapeHTML(key)}', '#{CGI.escapeHTML(value)}', 'header'));" %>
-    <% end %>
 
     <%- if GrapeSwaggerRails.options.api_key_initial.present? %>
       $('#input_apiKey').trigger('change');
